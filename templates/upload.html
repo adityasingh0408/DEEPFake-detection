@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deepfake Detection - Upload</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* Style for the video background */
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: auto; /* Hide the overflow content */
+        }
+
+        #background-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1; /* Ensure the video is behind other content */
+        }
+
+        /* Style for the container */
+        .container {
+            position: relative;
+            z-index: 1; /* Ensure the container appears above the video */
+            max-width: 600px;
+            margin: 100px 0 0 100px; /* Shifted to the left */
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Additional styling for the barcode control */
+        .barcode-control {
+            margin-top: 30px; /* Adjust margin as needed */
+        }
+
+        .barcode-control button {
+            margin-right: 10px; /* Adjust margin */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Video background -->
+    <video autoplay muted loop id="background-video">
+        <source src="{{ url_for('static', filename='video.mp4') }}" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
+
+    <div class="container" id="uploadContainer">
+        <h1 class="mt-5 text-center text-black styled-heading">Deepfake Detection</h1>
+        <form action="/upload" method="post" enctype="multipart/form-data" class="mt-4">
+            <div class="mb-3">
+                <input type="file" name="file" id="fileInput" class="form-control" onchange="previewImage()">
+                <img id="preview" src="#" alt="Image Preview" class="img-fluid rounded mx-auto d-block preview-image">
+            </div>
+            <button type="submit" class="btn btn-primary d-block mx-auto" onclick="handleFileUpload()"><i class="bi bi-upload"></i> Upload</button>
+        </form>
+        
+        <!-- Delete option -->
+        <button onclick="deleteImage()" class="btn btn-danger mt-3 delete-btn"><i class="bi bi-trash"></i> Delete Image</button>
+        
+        <!-- Barcode Detection Control -->
+        <div class="barcode-control">
+            <h2>Real-Time Face Detection </h2>
+            <p>Detection Status: {% if barcode_detection_running %}Running{% else %}Stopped{% endif %}</p>
+            <form method="GET" action="/start_detection">
+                <button class="btn btn-success" type="submit">Start Detection</button>
+            </form>
+            <form method="GET" action="/stop_detection">
+                <button class="btn btn-danger" type="submit">Stop Detection</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/script.js"></script>
+</body>
+</html>
